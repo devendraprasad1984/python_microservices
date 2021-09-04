@@ -12,3 +12,8 @@ cd user->python3 -m virtualenv .venv
 chmod -R 755 .venv/
 source .venv/bin/activate
 
+go to folder where app.py is: python -m flask run
+
+import secrets
+secrets.token_urlsafe(16)
+
