@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, sessions
+from flask_login import LoginManager
 from flask_migrate import Migrate
 
 import models
@@ -10,10 +11,34 @@ app.config['SECRET_KEY'] = 'ROZC0LbS0F7L2qRRkuV7qA'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./database/user.db'
 models.init_app(app)
-
 app.register_blueprint(user_blueprint)
-
+login_manager = LoginManager(app)
+login_manager.init_app(app)
 migrate = Migrate(app, models.db)
+
+
+@login_manager.user_loader
+def loan_user(user_id):
+    return models.User.query.filter_by(id=user_id).first()
+
+
+@login_manager.request_loader
+def load_user_from_request(request):
+    api_key = request.headers.get('Authorization')
+    if api_key:
+        api_key = api_key.replace('Basic ', '', 1)
+        user = models.User.query.filter_by(api_key=api_key).first()
+        if user:
+            return user
+        return None
+
+class CustomSessionInterface(sessions.SecureCookieSessionInterface):
+    """prevent creating session from API requests"""
+    def save_session(self, *args, **kwargs):
+        if g.get('login_via_header'):
+            return
+        return super(CustomSessionInterface, self).save_session(*args, **kwargs)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

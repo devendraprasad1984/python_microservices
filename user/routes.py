@@ -51,8 +51,7 @@ def login_user():
         return make_response(jsonify(response), 401)
     if check_password_hash(user.password, password):
         user.generate_api_key()
-        models.db.commit()
-        login_user(user)
+        models.db.session.commit()
         response = {
             'message': 'user logged in',
             'api_key': user.api_key
