@@ -41,7 +41,7 @@ def create_user():
 
 
 @user_blueprint.route('/login', methods=['POST'])
-def login_user():
+def login():
     username = request.form['username']
     password = request.form['password']
 
@@ -52,6 +52,7 @@ def login_user():
     if check_password_hash(user.password, password):
         user.generate_api_key()
         models.db.session.commit()
+        login_user(user)
         response = {
             'message': 'user logged in',
             'api_key': user.api_key
