@@ -1,0 +1,6 @@
+projectKey=python_microservices_flask
+serverUrl=http://localhost:9000
+serverVersion=8.9.2.46101
+dashboardUrl=http://localhost:9000/dashboard?id=python_microservices_flask
+ceTaskId=AXvQGlhHjkEtS4yoXCOG
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXvQGlhHjkEtS4yoXCOG
